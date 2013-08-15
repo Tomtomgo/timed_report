@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'timed_report'
-  s.version     = '0.0.3'
+  s.version     = '0.0.4'
   s.date        = '2013-08-14'
   s.summary     = "Puts with timing info."
   s.description = "Create reports in your script with timing information."

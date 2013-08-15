@@ -8,8 +8,11 @@ class TimedReport
   # Arguments:
   #   named: (String)
   def initialize named = nil
+    @intermediate_output = false
+    
     @start_time = Time.now
     @step_time = Time.now
+    
     @output = "\n=========================="
     
     if named != nil
@@ -18,6 +21,15 @@ class TimedReport
     end
 
     @output_methods = [lambda{|m| puts(m)}]
+  end
+
+  # Set to _true_ if you want intermediate output to show
+  #
+  # Arguments:
+  #   val: (Boolean)
+  def intermediate_output val = @intermediate_output
+    @intermediate_output = val
+    val
   end
 
   # Add a Proc or lambda that takes the report as argument.
@@ -39,6 +51,7 @@ class TimedReport
   #   >> tr.time_step()
   def time_step
     @step_time = Time.now
+    "❤"
   end
 
   # Adds a line of text including the difference in seconds between the last #add or #time_step.
@@ -58,6 +71,9 @@ class TimedReport
     end
 
     @output += "\n#{timing_info}#{txt}"
+
+    _puke("\n#{timing_info}#{txt}") if @intermediate_output
+    "❤"
   end
 
   # Finish the report. Call this add the end to print the report!
@@ -68,8 +84,17 @@ class TimedReport
     @output += "\n--------------------------"
     @output += "\nTotal time: %.5f" % (Time.now-@start_time)
     @output += "\n=========================="
+    _puke(@output)
+    "❤"
+  end
+
+  # Puke a string to all specified output methods.
+  # 
+  # Arguments:
+  #   txt: (String)
+  def _puke txt
     @output_methods.each do |om|
-      om.call(@output)
+      om.call(txt)
     end
   end
 
