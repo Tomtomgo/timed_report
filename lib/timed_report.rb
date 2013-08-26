@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class TimedReport
 
   # Creates a new TimedReport instance. If _named_ is given it will show the name in the report.
