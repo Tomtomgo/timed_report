@@ -9,12 +9,15 @@ class TimedReport
   #
   # Arguments:
   #   named: (String)
-  def initialize named = nil
+  #   enabled: (boolean)
+  def initialize named = nil, enabled = true
+    @enabled = enabled
+    @groups = {}
     @intermediate_output = false
-    
+
     @start_time = Time.now
     @step_time = Time.now
-    
+
     @output = "\n=========================="
     
     if named != nil
@@ -30,6 +33,7 @@ class TimedReport
   # Arguments:
   #   val: (Boolean)
   def intermediate_output val = @intermediate_output
+    return nil unless @enabled
     @intermediate_output = val
     val
   end
@@ -44,6 +48,7 @@ class TimedReport
   # Arguments:
   #   method: (Proc or lambda)
   def add_output_method method
+    return nil unless @enabled
     @output_methods.push method
   end
 
@@ -52,6 +57,7 @@ class TimedReport
   # Example:
   #   >> tr.time_step()
   def time_step
+    return nil unless @enabled
     @step_time = Time.now
     "❤"
   end
@@ -65,6 +71,7 @@ class TimedReport
   #   txt: (String)
   #   with_time: (Boolean)
   def add txt, with_time = true
+    return nil unless @enabled
     if with_time
       timing_info = "%.5f: " % (Time.now - @step_time)
       time_step()
@@ -78,11 +85,36 @@ class TimedReport
     "❤"
   end
 
+  # Adds a time count with key between the last #add or #add_g or #time_step.
+  #
+  # Example:
+  #   >> tr.add_g("one step")
+  # 
+  # Arguments:
+  #   group: (String)
+  #   with_time: (Boolean)
+  def add_g group, with_time = true
+    return nil unless @enabled
+    @groups[group.to_sym] ||= 0
+
+    if with_time
+      @groups[group.to_sym] += (Time.now - @step_time)
+      time_step()
+    end
+
+    "❤"
+  end
+
   # Finish the report. Call this add the end to print the report!
   # 
   # Example:
   #   >> tr.finish()
   def finish
+    return nil unless @enabled
+    @output += "\n--------------------------" if @groups.length > 0
+    @groups.each do |k,v|
+      @output += "\n#{k}: %.5f" % v
+    end
     @output += "\n--------------------------"
     @output += "\nTotal time: %.5f" % (Time.now-@start_time)
     @output += "\n=========================="

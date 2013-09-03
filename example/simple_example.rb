@@ -21,3 +21,4 @@ tr.add('sleep 0.5 with time_step()')
 
 # Export the report to the standard puts and the added method
 tr.finish()
+
