@@ -95,10 +95,11 @@ class TimedReport
   #   with_time: (Boolean)
   def add_g group, with_time = true
     return nil unless @enabled
-    @groups[group.to_sym] ||= 0
+    @groups[group.to_sym] ||= {t:0,n:0}
 
     if with_time
-      @groups[group.to_sym] += (Time.now - @step_time)
+      @groups[group.to_sym][:t] += (Time.now - @step_time)
+      @groups[group.to_sym][:n] += 1
       time_step()
     end
 
@@ -113,7 +114,7 @@ class TimedReport
     return nil unless @enabled
     @output += "\n--------------------------" if @groups.length > 0
     @groups.each do |k,v|
-      @output += "\n#{k}: %.5f" % v
+      @output += "\n#{k}: %.5f (%d calls, %.5f avg.)" % [v[:t], v[:n], v[:t]/v[:n].to_f]
     end
     @output += "\n--------------------------"
     @output += "\nTotal time: %.5f" % (Time.now-@start_time)

@@ -19,6 +19,11 @@ sleep 0.5
 tr.time_step()
 tr.add('sleep 0.5 with time_step()')
 
+10.times do
+  sleep 0.1
+  tr.add_g("group test")
+end
+
 # Export the report to the standard puts and the added method
 tr.finish()
 
