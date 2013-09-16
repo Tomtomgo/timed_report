@@ -13,7 +13,7 @@ class TimedReport
   def initialize named = nil, enabled = true
     @enabled = enabled
     @groups = {}
-    @infos = {}
+    @infos = []
     @intermediate_output = false
 
     @start_time = Time.now
@@ -111,13 +111,13 @@ class TimedReport
   # Adds info without time.
   #
   # Example:
-  #   >> tr.info("one step")
+  #   >> tr.info("happy: yes")
   # 
   # Arguments:
-  #   group: (String)
+  #   txt: (String)
   def info txt
     return nil unless @enabled
-    @infos.push([txt])
+    @infos.push(txt)
 
     "❤"
   end
