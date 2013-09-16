@@ -128,15 +128,17 @@ class TimedReport
   #   >> tr.finish()
   def finish
     return nil unless @enabled
+    
     @output += "\n--------------------------" if @groups.length > 0
     @groups.each do |k,v|
       @output += "\n#{k}: %.5f (%d calls, %.5f avg.)" % [v[:t], v[:n], v[:t]/v[:n].to_f]
     end
-    @output += "\n---------- INFO ----------" if @infos.length > 0
+    
+    @output += "\n---------- INFO ----------"
     @infos.each do |v|
       @output += "\n#{v}"
     end
-    @output += "\n--------------------------"
+
     @output += "\nTotal time: %.5f" % (Time.now-@start_time)
     @output += "\n=========================="
     _puke(@output)
