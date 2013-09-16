@@ -13,6 +13,7 @@ class TimedReport
   def initialize named = nil, enabled = true
     @enabled = enabled
     @groups = {}
+    @infos = {}
     @intermediate_output = false
 
     @start_time = Time.now
@@ -99,9 +100,24 @@ class TimedReport
 
     if with_time
       @groups[group.to_sym][:t] += (Time.now - @step_time)
-      @groups[group.to_sym][:n] += 1
       time_step()
     end
+
+    @groups[group.to_sym][:n] += 1
+
+    "❤"
+  end
+
+  # Adds info without time.
+  #
+  # Example:
+  #   >> tr.info("one step")
+  # 
+  # Arguments:
+  #   group: (String)
+  def info txt
+    return nil unless @enabled
+    @infos.push([txt])
 
     "❤"
   end
@@ -112,6 +128,10 @@ class TimedReport
   #   >> tr.finish()
   def finish
     return nil unless @enabled
+    @output += "\n--------------------------" if @infos.length > 0
+    @infos.each do |v|
+      @output += "\n#{v}"
+    end
     @output += "\n--------------------------" if @groups.length > 0
     @groups.each do |k,v|
       @output += "\n#{k}: %.5f (%d calls, %.5f avg.)" % [v[:t], v[:n], v[:t]/v[:n].to_f]
